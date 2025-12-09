@@ -62,8 +62,9 @@ COPY Gemfile Gemfile.lock ./
 # https://github.com/googleapis/google-cloud-ruby/issues/13306
 # adding xz as nokogiri was failing to build libxml
 # https://github.com/chatwoot/chatwoot/issues/4045
-RUN apk update && apk add --no-cache build-base musl ruby-full ruby-dev gcc make musl-dev openssl openssl-dev g++ linux-headers xz vips
+RUN apk update && apk add --no-cache build-base musl ruby-full ruby-dev gcc make musl-dev openssl openssl-dev g++ linux-headers xz vips libxml2-dev libxslt-dev zlib-dev
 RUN bundle config set --local force_ruby_platform true
+RUN bundle config set --local build.nokogiri --use-system-libraries
 
 # Do not install development or test gems in production
 RUN if [ "$RAILS_ENV" = "production" ]; then \
@@ -128,6 +129,8 @@ RUN apk update && apk add --no-cache \
   imagemagick \
   git \
   vips \
+  libxslt \
+  libxml2 \
   && gem install bundler
 
 COPY --from=node /usr/local/bin/node /usr/local/bin/
